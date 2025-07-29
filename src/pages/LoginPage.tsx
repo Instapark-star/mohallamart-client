@@ -1,16 +1,15 @@
-// src/pages/LoginPage.tsx
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { loginUser } from "@/lib/api"
-import { useToast } from "@/hooks/use-toast"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useAuthStore } from "@/store/useAuthStore"
+import { loginUser } from "../lib/api"
+import { useToast } from "../hooks/use-toast"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { useAuthStore } from "../store/useAuthStore"
 
 const LoginPage = () => {
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [phone, setPhone] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -27,13 +26,18 @@ const LoginPage = () => {
     setLoading(true)
 
     try {
-      const userData = await loginUser({ phone, password })
-      login(userData) // Zustand store
+      const response = await loginUser({ phone, password })
+
+      const { token, ...user } = response
+
+      login(user, token)
+
       toast({
         title: "✅ Login Successful",
         description: `Welcome back!`,
       })
-      navigate("/my-orders") // or "/profile"
+
+      navigate("/my-orders")
     } catch (err) {
       toast({
         title: "❌ Login Failed",

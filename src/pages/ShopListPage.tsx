@@ -1,4 +1,3 @@
-// src/pages/ShopListPage.tsx
 import { useEffect, useState } from "react"
 import ShopCard from "../components/ShopCard"
 import {
@@ -7,16 +6,15 @@ import {
   SheetTrigger,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
+} from "../components/ui/sheet"
+import { Button } from "../components/ui/button"
 import { SlidersHorizontal } from "lucide-react"
-import { fetchShops } from "@/lib/api"
 
 type Shop = {
-  id: string
+  _id: string
   name: string
   description: string
-  image: string
+  imageUrl: string
 }
 
 const FilterSidebar = () => (
@@ -48,22 +46,24 @@ const FilterSidebar = () => (
 
 const ShopListPage = () => {
   const [shops, setShops] = useState<Shop[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const loadShops = async () => {
+    const fetchShops = async () => {
       try {
-        const data = await fetchShops()
+        const res = await fetch("/api/shops")
+        if (!res.ok) throw new Error("Failed to fetch")
+        const data: Shop[] = await res.json()
         setShops(data)
-      } catch (err: any) {
-        setError("Failed to load shops")
+      } catch (err) {
+        setError("Failed to load shops.")
       } finally {
         setLoading(false)
       }
     }
 
-    loadShops()
+    fetchShops()
   }, [])
 
   return (
@@ -110,8 +110,14 @@ const ShopListPage = () => {
             <p className="text-gray-400 text-center">🚫 No shops found.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {shops.map((shop) => (
-                <ShopCard key={shop.id} {...shop} />
+              {shops.map((shop: Shop) => (
+                <ShopCard
+                  key={shop._id}
+                  id={shop._id}
+                  name={shop.name}
+                  description={shop.description}
+                  image={shop.imageUrl}
+                />
               ))}
             </div>
           )}

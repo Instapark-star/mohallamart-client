@@ -1,8 +1,8 @@
 // src/pages/CheckoutPage.tsx
 import { useState } from "react"
-import { useCartStore } from "@/store/useCartStore"
-import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
+import { useCartStore } from "../store/useCartStore"
+import { useToast } from "../hooks/use-toast"
+import { Button } from "../components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { createOrder } from "@/lib/api"
+} from "../components/ui/dialog"
+import { Input } from "../components/ui/input"
+import { Textarea } from "../components/ui/textarea"
+
+type CartItem = {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  image: string
+}
 
 const CheckoutPage = () => {
-  const items = useCartStore((state) => state.items)
+  const items = useCartStore((state) => state.items as CartItem[])
   const clearCart = useCartStore((state) => state.clearCart)
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = items.reduce(
+    (sum: number, item: CartItem) => sum + item.price * item.quantity,
+    0
+  )
+
   const { toast } = useToast()
 
   const [name, setName] = useState("")
@@ -37,12 +48,18 @@ const CheckoutPage = () => {
 
     setLoading(true)
     try {
-      await createOrder({
-        customerName: name,
-        customerPhone: phone,
-        deliveryAddress: address,
-        items,
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: name,
+          customerPhone: phone,
+          deliveryAddress: address,
+          items,
+        }),
       })
+
+      if (!res.ok) throw new Error("Order failed")
 
       toast({
         title: "✅ Order Placed",
@@ -75,18 +92,18 @@ const CheckoutPage = () => {
           <Input
             placeholder="Your Name"
             value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
           <Input
             placeholder="Phone Number"
             value={phone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value)}
           />
           <Textarea
             placeholder="Full Delivery Address"
             rows={4}
             value={address}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setAddress(e.target.value)}
+            onChange={(e) => setAddress(e.target.value)}
           />
         </section>
 
@@ -99,7 +116,7 @@ const CheckoutPage = () => {
           ) : (
             <>
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-                {items.map((item) => (
+                {items.map((item: CartItem) => (
                   <div key={item.id} className="flex items-center gap-4">
                     <img
                       src={item.image}

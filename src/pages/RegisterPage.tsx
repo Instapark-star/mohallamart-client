@@ -1,18 +1,17 @@
-// src/pages/RegisterPage.tsx
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
-import { registerUser } from "@/lib/api"
-import { useAuthStore } from "@/store/useAuthStore"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { useToast } from "../hooks/use-toast"
+import { registerUser } from "../lib/api"
+import { useAuthStore } from "../store/useAuthStore"
 import { Link } from "react-router-dom"
 
 const RegisterPage = () => {
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [name, setName] = useState<string>("")
+  const [phone, setPhone] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -30,7 +29,8 @@ const RegisterPage = () => {
 
     try {
       const userData = await registerUser({ name, phone, password })
-      login(userData) // Auto-login after register
+
+      login(userData.user, userData.token) // Ensure user + token passed correctly
 
       toast({
         title: "✅ Registered Successfully",

@@ -37,7 +37,7 @@ type FormSchema = z.infer<typeof formSchema>
 
 const AddProductPage = () => {
   const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver<FormSchema>(formSchema), // ✅ Explicit generic
     defaultValues: {
       name: "",
       price: 0,
@@ -72,6 +72,8 @@ const AddProductPage = () => {
                 </FormItem>
               )}
             />
+
+            {/* ✅ Fixed price field */}
             <FormField
               control={form.control}
               name="price"
@@ -79,12 +81,18 @@ const AddProductPage = () => {
                 <FormItem>
                   <FormLabel>Price (₹)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input
+                      type="number"
+                      {...field}
+                      value={typeof field.value === "number" ? field.value : ""}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="description"
@@ -99,6 +107,7 @@ const AddProductPage = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="category"
@@ -121,6 +130,7 @@ const AddProductPage = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="image"

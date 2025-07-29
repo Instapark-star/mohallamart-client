@@ -8,8 +8,11 @@ const Loader = () => {
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={cn(
-        "fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity",
+        "fixed inset-0 z-[9999] flex items-center justify-center",
+        "bg-black/80 backdrop-blur-sm transition-opacity duration-300",
         isLoading ? "opacity-100 visible" : "opacity-0 invisible"
       )}
     >

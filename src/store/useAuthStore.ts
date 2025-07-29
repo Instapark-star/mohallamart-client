@@ -1,23 +1,22 @@
 // src/store/useAuthStore.ts
 import { create } from "zustand"
 
-type User = {
+export type User = {
   _id: string
   name: string
   phone: string
-  token: string
 }
 
 type AuthStore = {
   user: User | null
-  login: (userData: User) => void
+  token: string | null
+  login: (user: User, token: string) => void
   logout: () => void
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
-
-  login: (userData) => set({ user: userData }),
-
-  logout: () => set({ user: null }),
+  token: null,
+  login: (user, token) => set({ user, token }),
+  logout: () => set({ user: null, token: null }),
 }))

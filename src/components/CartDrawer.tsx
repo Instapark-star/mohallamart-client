@@ -1,3 +1,4 @@
+// src/components/CartDrawer.tsx
 import {
   Sheet,
   SheetContent,
@@ -10,17 +11,27 @@ import { Button } from "@/components/ui/button"
 import { useCartStore } from "@/store/useCartStore"
 import { ShoppingCart } from "lucide-react"
 
-const CartDrawer = () => {
-  const cart = useCartStore((state) => state.cart)
+type CartItem = {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  image: string
+}
 
-  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0)
+const CartDrawer = () => {
+  const items = useCartStore((state) => state.items)
+
+  const subtotal = items.reduce((total: number, item: CartItem) => {
+    return total + item.price * item.quantity
+  }, 0)
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="gap-2">
           <ShoppingCart className="w-4 h-4" />
-          Cart ({cart.length})
+          Cart ({items.length})
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="bg-neutral-900 text-white">
@@ -32,15 +43,19 @@ const CartDrawer = () => {
         </SheetHeader>
 
         <div className="mt-6 space-y-4">
-          {cart.length === 0 && <p className="text-sm text-gray-400">Your cart is empty.</p>}
-          {cart.map((item) => (
+          {items.length === 0 && (
+            <p className="text-sm text-gray-400">Your cart is empty.</p>
+          )}
+          {items.map((item: CartItem) => (
             <div
               key={item.id}
               className="flex items-center justify-between gap-4 border-b border-neutral-700 pb-4"
             >
               <div>
                 <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-400">₹{item.price} × {item.quantity}</p>
+                <p className="text-sm text-gray-400">
+                  ₹{item.price} × {item.quantity}
+                </p>
               </div>
               <img
                 src={item.image}
