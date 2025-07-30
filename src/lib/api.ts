@@ -74,19 +74,28 @@ export const loginUser = async (credentials: {
   return res.json()
 }
 
-// 🆕 Register API
-export const registerUser = async (userData: {
+// 🆕 Register API – ✅ Fixed Return Type
+export const registerUser = async ({
+  name,
+  phone,
+  password,
+}: {
   name: string
   phone: string
   password: string
-}): Promise<User> => {
+}): Promise<{ user: User; token: string }> => {
   const res = await fetch("http://localhost:5000/api/register", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name, phone, password }),
   })
 
-  if (!res.ok) throw new Error("Failed to register user")
+  if (!res.ok) {
+    throw new Error("Registration failed")
+  }
+
   return res.json()
 }
 
