@@ -1,5 +1,5 @@
 // src/components/DeliveryStatusBadge.tsx
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "./ui/badge"
 
 type OrderStatus =
   | "placed"
@@ -10,7 +10,7 @@ type OrderStatus =
   | "pending"
 
 type DeliveryStatusBadgeProps = {
-  status: OrderStatus | string // allow fallback for unknown statuses
+  status: OrderStatus | string // fallback allowed
 }
 
 const statusMap: Record<OrderStatus, { label: string; bg: string }> = {
