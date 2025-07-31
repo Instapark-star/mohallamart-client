@@ -1,17 +1,18 @@
+// src/pages/RegisterPage.tsx
+
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { useToast } from "../hooks/use-toast"
 import { registerUser } from "../lib/api"
 import { useAuthStore } from "../store/useAuthStore"
-import { Link } from "react-router-dom"
 
 const RegisterPage = () => {
-  const [name, setName] = useState<string>("")
-  const [phone, setPhone] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(false)
+  const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -25,12 +26,18 @@ const RegisterPage = () => {
       })
     }
 
+    if (phone.length !== 10) {
+      return toast({
+        title: "📱 Invalid Phone",
+        description: "Phone number must be 10 digits",
+      })
+    }
+
     setLoading(true)
 
     try {
-      const userData = await registerUser({ name, phone, password })
-
-      login(userData.user, userData.token) // Ensure user + token passed correctly
+      const { user, token } = await registerUser({ name, phone, password })
+      login(user, token)
 
       toast({
         title: "✅ Registered Successfully",
@@ -56,18 +63,18 @@ const RegisterPage = () => {
         <Input
           placeholder="Full Name"
           value={name}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
         <Input
-          placeholder="Phone Number"
+          placeholder="Phone Number (10 digits)"
           value={phone}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(e.target.value)}
         />
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <Button

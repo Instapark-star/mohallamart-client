@@ -51,11 +51,15 @@ const ShopDetailsPage = () => {
   }, [id])
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 md:px-6 py-16">
+    <main className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
       {/* Shop Header */}
-      <section className="max-w-6xl mx-auto mb-12 text-center md:text-left">
-        <h1 className="text-3xl md:text-4xl font-semibold mb-2">Shop Details</h1>
-        <p className="text-gray-400 text-base">Explore products from your neighborhood shop.</p>
+      <section className="max-w-6xl mx-auto mb-10 text-center md:text-left">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2">
+          Shop Details
+        </h1>
+        <p className="text-sm sm:text-base text-gray-400">
+          Explore products from your neighborhood shop.
+        </p>
       </section>
 
       {/* Products Grid */}
@@ -67,19 +71,19 @@ const ShopDetailsPage = () => {
         ) : products.length === 0 ? (
           <p className="text-gray-400 text-center">🚫 No products found.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {products.map((product: Product) => (
               <div
                 key={product._id}
-                className="bg-neutral-900 p-6 rounded-2xl shadow-md hover:shadow-xl transition-all"
+                className="bg-neutral-900 p-5 sm:p-6 rounded-2xl shadow-md hover:shadow-xl transition-all"
               >
                 <img
                   src={product.imageUrl}
                   alt={product.name}
-                  className="w-full h-40 object-cover rounded-xl mb-4"
+                  className="w-full h-40 sm:h-48 object-cover rounded-xl mb-4"
                 />
-                <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
-                <p className="text-gray-400 mb-4">₹{product.price}</p>
+                <h2 className="text-base sm:text-lg font-semibold mb-1">{product.name}</h2>
+                <p className="text-gray-400 text-sm sm:text-base mb-4">₹{product.price}</p>
                 <Button
                   variant="default"
                   size="sm"

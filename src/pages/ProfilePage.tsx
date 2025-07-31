@@ -1,51 +1,40 @@
 // src/pages/ProfilePage.tsx
+
 import { useAuthStore } from "@/store/useAuthStore"
-import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { useEffect } from "react"
-import { useToast } from "@/hooks/use-toast"
+import { useNavigate } from "react-router-dom"
 
 const ProfilePage = () => {
-  const user = useAuthStore((state) => state.user)
-  const logout = useAuthStore((state) => state.logout)
+  const { user, logout } = useAuthStore()
   const navigate = useNavigate()
-  const { toast } = useToast()
 
-  useEffect(() => {
-    if (!user) {
-      toast({
-        title: "🔐 Login Required",
-        description: "Please log in to view your profile.",
-      })
-      navigate("/login")
-    }
-  }, [user, navigate, toast])
+  const handleLogout = () => {
+    logout()
+    navigate("/login")
+  }
 
-  if (!user) return null
+  if (!user) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-black text-white">
+        <p>You are not logged in.</p>
+      </main>
+    )
+  }
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-20">
-      <div className="bg-neutral-900 rounded-2xl p-8 w-full max-w-md shadow-xl space-y-6">
-        <h1 className="text-2xl font-semibold text-center">Your Profile</h1>
+    <main className="min-h-screen bg-black text-white px-4 md:px-6 py-16">
+      <div className="max-w-md mx-auto bg-neutral-900 p-6 rounded-2xl shadow-lg space-y-6 text-center">
+        <h1 className="text-2xl font-semibold">👤 Profile</h1>
 
-        <div className="space-y-2 text-center">
-          <p className="text-lg font-medium">👤 {user.name}</p>
-          <p className="text-gray-400 text-sm">📞 {user.phone}</p>
-        </div>
+        <p className="text-lg">
+          <strong>Name:</strong> {user.name}
+        </p>
+        <p className="text-lg">
+          <strong>Phone:</strong> {user.phone}
+        </p>
 
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => {
-            logout()
-            toast({
-              title: "🚪 Logged Out",
-              description: "You’ve been logged out successfully.",
-            })
-            navigate("/")
-          }}
-        >
-          Logout
+        <Button onClick={handleLogout} className="w-full mt-6">
+          🚪 Logout
         </Button>
       </div>
     </main>

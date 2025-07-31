@@ -1,5 +1,7 @@
+// src/pages/LoginPage.tsx
+
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { loginUser } from "../lib/api"
 import { useToast } from "../hooks/use-toast"
 import { Input } from "../components/ui/input"
@@ -7,9 +9,9 @@ import { Button } from "../components/ui/button"
 import { useAuthStore } from "../store/useAuthStore"
 
 const LoginPage = () => {
-  const [phone, setPhone] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(false)
+  const [phone, setPhone] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -23,18 +25,24 @@ const LoginPage = () => {
       })
     }
 
+    if (phone.length !== 10) {
+      return toast({
+        title: "📱 Invalid Phone",
+        description: "Phone number must be 10 digits",
+      })
+    }
+
     setLoading(true)
 
     try {
       const response = await loginUser({ phone, password })
-
       const { token, ...user } = response
 
       login(user, token)
 
       toast({
         title: "✅ Login Successful",
-        description: `Welcome back!`,
+        description: "Welcome back!",
       })
 
       navigate("/my-orders")
@@ -54,15 +62,15 @@ const LoginPage = () => {
         <h1 className="text-2xl font-semibold text-center">Login to MohallaMart</h1>
 
         <Input
-          placeholder="Phone Number"
+          placeholder="Phone Number (10 digits)"
           value={phone}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(e.target.value)}
         />
         <Input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <Button
@@ -72,6 +80,13 @@ const LoginPage = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </Button>
+
+        <p className="text-sm text-center text-gray-400">
+          New to MohallaMart?{" "}
+          <Link to="/register" className="text-white underline">
+            Create an account
+          </Link>
+        </p>
       </div>
     </main>
   )

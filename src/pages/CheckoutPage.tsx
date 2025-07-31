@@ -1,4 +1,3 @@
-// src/pages/CheckoutPage.tsx
 import { useState } from "react"
 import { useCartStore } from "../store/useCartStore"
 import { useToast } from "../hooks/use-toast"
@@ -81,13 +80,17 @@ const CheckoutPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 md:px-6 py-16">
-      <h1 className="text-3xl font-semibold text-center mb-10">Checkout</h1>
+    <main className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center mb-10">
+        Checkout
+      </h1>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left: Delivery Form */}
         <section className="bg-neutral-900 p-6 rounded-2xl shadow-lg space-y-4">
-          <h2 className="text-xl font-semibold mb-2">Delivery Information</h2>
+          <h2 className="text-lg sm:text-xl font-semibold mb-2">
+            Delivery Information
+          </h2>
 
           <Input
             placeholder="Your Name"
@@ -109,7 +112,7 @@ const CheckoutPage = () => {
 
         {/* Right: Order Summary */}
         <section className="bg-neutral-900 p-6 rounded-2xl shadow-lg space-y-6">
-          <h2 className="text-xl font-semibold">Order Summary</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">Order Summary</h2>
 
           {items.length === 0 ? (
             <p className="text-gray-400">🛒 Your cart is empty.</p>
@@ -133,7 +136,9 @@ const CheckoutPage = () => {
                 ))}
               </div>
 
-              <div className="text-lg font-semibold">Subtotal: ₹{subtotal}</div>
+              <div className="text-lg font-semibold">
+                Subtotal: ₹{subtotal}
+              </div>
 
               <Dialog>
                 <DialogTrigger asChild>
@@ -141,6 +146,7 @@ const CheckoutPage = () => {
                     {loading ? "Placing Order..." : "Place Order"}
                   </Button>
                 </DialogTrigger>
+
                 <DialogContent className="bg-white text-black">
                   <DialogHeader>
                     <DialogTitle>Confirm Order</DialogTitle>

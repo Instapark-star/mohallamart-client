@@ -1,9 +1,11 @@
+// tsconfig.json
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["node"] // ✅ Enables Node.js globals like __dirname, path, etc.
   },
   "files": [],
   "references": [

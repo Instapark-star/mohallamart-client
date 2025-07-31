@@ -1,6 +1,7 @@
 // src/App.tsx
 import { Routes, Route, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
+import { easeInOut } from "framer-motion" // ✅ import easing preset
 
 import Layout from "./components/Layout"
 import Landing from "./pages/Landing"
@@ -14,9 +15,23 @@ import RegisterPage from "./pages/RegisterPage"
 import ProfilePage from "./pages/ProfilePage"
 
 const pageVariants = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -30 },
+  initial: { opacity: 0, y: 20 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: easeInOut, // ✅ now TypeScript is happy
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    transition: {
+      duration: 0.2,
+      ease: easeInOut,
+    },
+  },
 }
 
 const AnimatedRoute = ({ children }: { children: React.ReactNode }) => (
@@ -25,7 +40,6 @@ const AnimatedRoute = ({ children }: { children: React.ReactNode }) => (
     initial="initial"
     animate="animate"
     exit="exit"
-    transition={{ duration: 0.3, ease: "easeInOut" }}
   >
     {children}
   </motion.div>
@@ -33,47 +47,21 @@ const AnimatedRoute = ({ children }: { children: React.ReactNode }) => (
 
 const App = () => {
   const location = useLocation()
+  const routeKey = location.pathname.split("/")[1] || "/"
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={routeKey}>
         <Route element={<Layout />}>
-          <Route
-            path="/"
-            element={<AnimatedRoute><Landing /></AnimatedRoute>}
-          />
-          <Route
-            path="/shops"
-            element={<AnimatedRoute><ShopListPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/shop/:id"
-            element={<AnimatedRoute><ShopDetailsPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/cart"
-            element={<AnimatedRoute><CartPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/checkout"
-            element={<AnimatedRoute><CheckoutPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/my-orders"
-            element={<AnimatedRoute><MyOrdersPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/login"
-            element={<AnimatedRoute><LoginPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/register"
-            element={<AnimatedRoute><RegisterPage /></AnimatedRoute>}
-          />
-          <Route
-            path="/profile"
-            element={<AnimatedRoute><ProfilePage /></AnimatedRoute>}
-          />
+          <Route path="/" element={<AnimatedRoute><Landing /></AnimatedRoute>} />
+          <Route path="/shops" element={<AnimatedRoute><ShopListPage /></AnimatedRoute>} />
+          <Route path="/shop/:id" element={<AnimatedRoute><ShopDetailsPage /></AnimatedRoute>} />
+          <Route path="/cart" element={<AnimatedRoute><CartPage /></AnimatedRoute>} />
+          <Route path="/checkout" element={<AnimatedRoute><CheckoutPage /></AnimatedRoute>} />
+          <Route path="/my-orders" element={<AnimatedRoute><MyOrdersPage /></AnimatedRoute>} />
+          <Route path="/login" element={<AnimatedRoute><LoginPage /></AnimatedRoute>} />
+          <Route path="/register" element={<AnimatedRoute><RegisterPage /></AnimatedRoute>} />
+          <Route path="/profile" element={<AnimatedRoute><ProfilePage /></AnimatedRoute>} />
         </Route>
       </Routes>
     </AnimatePresence>

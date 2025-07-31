@@ -67,7 +67,7 @@ const ShopListPage = () => {
   }, [])
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 md:px-6 py-16">
+    <main className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
       <div className="max-w-7xl mx-auto grid md:grid-cols-[260px_1fr] gap-10">
         {/* Sidebar Filters for Desktop */}
         <aside className="hidden md:block bg-neutral-900 rounded-2xl p-6 h-fit shadow-md">
@@ -77,8 +77,8 @@ const ShopListPage = () => {
 
         {/* Main Content */}
         <section>
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl md:text-4xl font-semibold text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center md:text-left">
               Explore Mohalla Shops
             </h1>
 
@@ -109,7 +109,7 @@ const ShopListPage = () => {
           ) : shops.length === 0 ? (
             <p className="text-gray-400 text-center">🚫 No shops found.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {shops.map((shop: Shop) => (
                 <ShopCard
                   key={shop._id}

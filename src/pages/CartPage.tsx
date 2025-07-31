@@ -36,13 +36,15 @@ const CartPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 md:px-6 py-16">
-      <h1 className="text-3xl md:text-4xl font-semibold mb-10 text-center">
+    <main className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-10 text-center">
         Your Cart
       </h1>
 
       {items.length === 0 ? (
-        <p className="text-center text-gray-400">🛒 Your cart is empty</p>
+        <p className="text-center text-gray-400 text-base sm:text-lg">
+          🛒 Your cart is empty
+        </p>
       ) : (
         <>
           {/* Cart Items */}
@@ -50,7 +52,7 @@ const CartPage = () => {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 bg-neutral-900 p-6 rounded-2xl shadow-md hover:shadow-lg transition duration-300"
+                className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 bg-neutral-900 p-5 sm:p-6 rounded-2xl shadow-md hover:shadow-lg transition-all"
               >
                 <img
                   src={item.image}
@@ -58,8 +60,8 @@ const CartPage = () => {
                   className="w-full sm:w-24 h-24 object-cover rounded-xl"
                 />
                 <div className="flex-1 text-center sm:text-left">
-                  <h2 className="text-lg font-semibold">{item.name}</h2>
-                  <p className="text-gray-400">
+                  <h2 className="text-base sm:text-lg font-semibold">{item.name}</h2>
+                  <p className="text-gray-400 text-sm sm:text-base">
                     ₹{item.price} × {item.quantity}
                   </p>
                 </div>
@@ -79,7 +81,7 @@ const CartPage = () => {
 
           {/* Subtotal + Checkout */}
           <section className="max-w-4xl mx-auto mt-12 text-center sm:text-right">
-            <h3 className="text-xl font-semibold mb-4">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4">
               Subtotal: ₹{subtotal}
             </h3>
 
