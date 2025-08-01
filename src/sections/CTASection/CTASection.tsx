@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button" // ✅ Fixed import
+import { Button } from "@/components/ui/button" // ✅ Correct named import
 
 const CTASection = () => {
   return (
