@@ -1,5 +1,3 @@
-// src/pages/MyOrdersPage.tsx
-
 import { useEffect, useState } from "react"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useToast } from "@/hooks/use-toast"
@@ -41,7 +39,7 @@ const MyOrdersPage = () => {
   const [selectedTip, setSelectedTip] = useState("")
   const [activeOrderId, setActiveOrderId] = useState("")
 
-  const token = useAuthStore((s) => s.token)
+  const { token } = useAuthStore()
   const { toast } = useToast()
 
   useEffect(() => {
