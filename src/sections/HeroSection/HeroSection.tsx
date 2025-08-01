@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button" // ✅ Fixed import
+import { Button } from "@/components/ui/button"
 
 const HeroSection = () => {
   return (
@@ -33,10 +33,14 @@ const HeroSection = () => {
         className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6 sm:mt-8"
       >
         <a href="#features">
-          <Button variant="default" className="w-full sm:w-auto">Explore Shops</Button>
+          <Button variant="default" className="w-full sm:w-auto">
+            Explore Shops
+          </Button>
         </a>
         <a href="#cta">
-          <Button variant="outline" className="w-full sm:w-auto">Learn More</Button>
+          <Button variant="outline" className="w-full sm:w-auto">
+            Learn More
+          </Button>
         </a>
       </motion.div>
 
