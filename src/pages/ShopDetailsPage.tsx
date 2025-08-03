@@ -1,20 +1,17 @@
+// src/pages/ShopDetailsPage.tsx
+
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { useCartStore } from "../store/useCartStore"
 import { useToast } from "../hooks/use-toast"
-
-type Product = {
-  _id: string
-  name: string
-  price: number
-  imageUrl: string
-}
+import { fetchShopProducts } from "../lib/api"
+import type { Product } from "../lib/api" // ✅ type-only import for strict TS
 
 const ShopDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
   const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const addToCart = useCartStore((state) => state.addToCart)
@@ -27,6 +24,7 @@ const ShopDetailsPage = () => {
       price: product.price,
       image: product.imageUrl,
     })
+
     toast({
       title: "✅ Added to Cart",
       description: `${product.name} added to your cart.`,
@@ -34,11 +32,10 @@ const ShopDetailsPage = () => {
   }
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
+      if (!id) return
       try {
-        const res = await fetch(`/api/products/${id}`)
-        if (!res.ok) throw new Error("Failed to fetch products")
-        const data: Product[] = await res.json()
+        const data = await fetchShopProducts(id)
         setProducts(data)
       } catch (err) {
         setError("Failed to load products.")
@@ -47,7 +44,7 @@ const ShopDetailsPage = () => {
       }
     }
 
-    if (id) fetchProducts()
+    loadProducts()
   }, [id])
 
   return (
@@ -72,7 +69,7 @@ const ShopDetailsPage = () => {
           <p className="text-gray-400 text-center">🚫 No products found.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {products.map((product: Product) => (
+            {products.map((product) => (
               <div
                 key={product._id}
                 className="bg-neutral-900 p-5 sm:p-6 rounded-2xl shadow-md hover:shadow-xl transition-all"
@@ -82,8 +79,12 @@ const ShopDetailsPage = () => {
                   alt={product.name}
                   className="w-full h-40 sm:h-48 object-cover rounded-xl mb-4"
                 />
-                <h2 className="text-base sm:text-lg font-semibold mb-1">{product.name}</h2>
-                <p className="text-gray-400 text-sm sm:text-base mb-4">₹{product.price}</p>
+                <h2 className="text-base sm:text-lg font-semibold mb-1">
+                  {product.name}
+                </h2>
+                <p className="text-gray-400 text-sm sm:text-base mb-4">
+                  ₹{product.price}
+                </p>
                 <Button
                   variant="default"
                   size="sm"

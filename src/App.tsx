@@ -1,7 +1,6 @@
 // src/App.tsx
 import { Routes, Route, useLocation } from "react-router-dom"
-import { AnimatePresence, motion } from "framer-motion"
-import { easeInOut } from "framer-motion" // ✅ import easing preset
+import { AnimatePresence, motion, easeInOut } from "framer-motion" // ✅ Combined import
 
 import Layout from "./components/Layout"
 import Landing from "./pages/Landing"
@@ -13,6 +12,7 @@ import MyOrdersPage from "./pages/MyOrdersPage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 import ProfilePage from "./pages/ProfilePage"
+import NotFoundPage from "./pages/NotFound" // ✅ Updated import for renamed file
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -21,7 +21,7 @@ const pageVariants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: easeInOut, // ✅ now TypeScript is happy
+      ease: easeInOut,
     },
   },
   exit: {
@@ -62,6 +62,9 @@ const App = () => {
           <Route path="/login" element={<AnimatedRoute><LoginPage /></AnimatedRoute>} />
           <Route path="/register" element={<AnimatedRoute><RegisterPage /></AnimatedRoute>} />
           <Route path="/profile" element={<AnimatedRoute><ProfilePage /></AnimatedRoute>} />
+
+          {/* ✅ 404 Fallback Route */}
+          <Route path="*" element={<AnimatedRoute><NotFoundPage /></AnimatedRoute>} />
         </Route>
       </Routes>
     </AnimatePresence>

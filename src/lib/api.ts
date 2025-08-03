@@ -30,6 +30,13 @@ export type User = {
   token: string
 }
 
+export type Product = {
+  _id: string
+  name: string
+  price: number
+  imageUrl: string
+}
+
 // 🔄 Fetch all shops
 export const fetchShops = async (): Promise<Shop[]> => {
   const res = await fetch("/api/shops")
@@ -104,5 +111,56 @@ export const fetchMyOrders = async (userId: string): Promise<OrderResponse[]> =>
   const res = await fetch(`http://localhost:5000/api/my-orders?userId=${userId}`)
 
   if (!res.ok) throw new Error("Failed to fetch orders")
+  return res.json()
+}
+
+// ⭐ Submit Order Rating
+export const rateOrder = async ({
+  orderId,
+  rating,
+  token,
+}: {
+  orderId: string
+  rating: number
+  token: string
+}): Promise<void> => {
+  const res = await fetch(`http://localhost:5000/api/orders/${orderId}/rate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ rating }),
+  })
+
+  if (!res.ok) throw new Error("Failed to submit rating")
+}
+
+// 💸 Send Tip
+export const tipOrder = async ({
+  orderId,
+  tipAmount,
+  token,
+}: {
+  orderId: string
+  tipAmount: number
+  token: string
+}): Promise<void> => {
+  const res = await fetch(`http://localhost:5000/api/orders/${orderId}/tip`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ tipAmount }),
+  })
+
+  if (!res.ok) throw new Error("Failed to send tip")
+}
+
+// 🛍️ Fetch products for a specific shop
+export const fetchShopProducts = async (shopId: string): Promise<Product[]> => {
+  const res = await fetch(`http://localhost:5000/api/products/${shopId}`)
+  if (!res.ok) throw new Error("Failed to fetch products")
   return res.json()
 }

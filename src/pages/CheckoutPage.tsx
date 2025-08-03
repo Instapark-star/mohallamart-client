@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useCartStore } from "../store/useCartStore"
+import { useAuthStore } from "../store/useAuthStore"
 import { useToast } from "../hooks/use-toast"
+import { useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import {
   Dialog,
@@ -13,14 +15,7 @@ import {
 } from "../components/ui/dialog"
 import { Input } from "../components/ui/input"
 import { Textarea } from "../components/ui/textarea"
-
-type CartItem = {
-  id: string
-  name: string
-  price: number
-  quantity: number
-  image: string
-}
+import type { CartItem } from "../lib/api" // ✅ Type-only import
 
 const CheckoutPage = () => {
   const items = useCartStore((state) => state.items as CartItem[])
@@ -31,7 +26,8 @@ const CheckoutPage = () => {
   )
 
   const { toast } = useToast()
-
+  const navigate = useNavigate()
+  const { token } = useAuthStore()
   const [name, setName] = useState("")
   const [address, setAddress] = useState("")
   const [phone, setPhone] = useState("")
@@ -45,34 +41,58 @@ const CheckoutPage = () => {
       })
     }
 
+    if (!token) {
+      return toast({
+        title: "🔐 Not Logged In",
+        description: "Please log in before placing an order.",
+      })
+    }
+
     setLoading(true)
+
     try {
-      const res = await fetch("/api/orders", {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+      })
+
+      const latitude = position.coords.latitude
+      const longitude = position.coords.longitude
+
+      const res = await fetch(`/api/orders`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           customerName: name,
-          customerPhone: phone,
-          deliveryAddress: address,
+          phone,
+          latitude,
+          longitude,
           items,
         }),
       })
 
-      if (!res.ok) throw new Error("Order failed")
+      if (!res.ok) throw new Error("Order creation failed")
 
       toast({
         title: "✅ Order Placed",
-        description: "Your items will be delivered to your address!",
+        description: "Your items will be delivered soon!",
       })
 
       clearCart()
       setName("")
       setPhone("")
       setAddress("")
-    } catch (error) {
+      navigate("/my-orders")
+    } catch (err: any) {
+      console.error("Order Error:", err)
       toast({
         title: "❌ Failed to Place Order",
-        description: "Please try again.",
+        description:
+          err?.message?.includes("user denied")
+            ? "Location permission is required to place order."
+            : "Please try again later.",
       })
     } finally {
       setLoading(false)

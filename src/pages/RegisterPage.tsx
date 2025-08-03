@@ -6,6 +6,7 @@ import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { useToast } from "../hooks/use-toast"
 import { registerUser } from "../lib/api"
+import type { User } from "../lib/api" // ✅ type-only import
 import { useAuthStore } from "../store/useAuthStore"
 
 const RegisterPage = () => {
@@ -37,7 +38,7 @@ const RegisterPage = () => {
 
     try {
       const { user, token } = await registerUser({ name, phone, password })
-      login(user, token)
+      login(user as User, token)
 
       toast({
         title: "✅ Registered Successfully",

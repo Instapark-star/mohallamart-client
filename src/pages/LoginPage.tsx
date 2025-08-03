@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { loginUser } from "../lib/api"
+import type { User } from "../lib/api" // ✅ type-only import
 import { useToast } from "../hooks/use-toast"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
@@ -38,7 +39,7 @@ const LoginPage = () => {
       const response = await loginUser({ phone, password })
       const { token, ...user } = response
 
-      login(user, token)
+      login(user as User, token)
 
       toast({
         title: "✅ Login Successful",

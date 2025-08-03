@@ -1,11 +1,6 @@
 // src/store/useAuthStore.ts
 import { create } from "zustand"
-
-export type User = {
-  _id: string
-  name: string
-  phone: string
-}
+import type { User } from "../lib/api" // ✅ type-only import
 
 type AuthStore = {
   user: User | null

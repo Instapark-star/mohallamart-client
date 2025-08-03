@@ -1,10 +1,20 @@
-/* Fix for Vercel build */
+/* Import Google Font - Inter (optional but recommended) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
+/* Tailwind Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar (optional) */
+/* Custom Font Family (applied globally via Tailwind layer) */
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -17,9 +27,4 @@
 ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 9999px;
-}
-
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
 }

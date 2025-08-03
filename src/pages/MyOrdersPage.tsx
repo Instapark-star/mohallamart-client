@@ -1,3 +1,5 @@
+// src/pages/MyOrdersPage.tsx
+
 import { useEffect, useState } from "react"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useToast } from "@/hooks/use-toast"
@@ -14,26 +16,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import DeliveryStatusBadge from "@/components/DeliveryStatusBadge"
-
-type OrderItem = {
-  id: string
-  name: string
-  image: string
-  price: number
-  quantity: number
-}
-
-type Order = {
-  _id: string
-  items: OrderItem[]
-  createdAt: string
-  status?: string
-  hasRated?: boolean
-  hasTipped?: boolean
-}
+import type { OrderResponse } from "@/lib/api"
 
 const MyOrdersPage = () => {
-  const [orders, setOrders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<OrderResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedRating, setSelectedRating] = useState(5)
   const [selectedTip, setSelectedTip] = useState("")
@@ -67,33 +53,74 @@ const MyOrdersPage = () => {
     }
 
     fetchOrders()
-  }, [token, toast])
+  }, [token])
 
-  const handleSubmitRating = () => {
-    toast({
-      title: "⭐ Thanks for Rating!",
-      description: `You rated ${selectedRating} star(s).`,
-    })
+  const handleSubmitRating = async () => {
+    if (!token || !activeOrderId) return
 
-    setOrders((prev) =>
-      prev.map((o) =>
-        o._id === activeOrderId ? { ...o, hasRated: true } : o
+    try {
+      const res = await fetch(`/api/orders/${activeOrderId}/rate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ rating: selectedRating }),
+      })
+
+      if (!res.ok) throw new Error("Failed to submit rating")
+
+      toast({
+        title: "⭐ Thanks for Rating!",
+        description: `You rated ${selectedRating} star(s).`,
+      })
+
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === activeOrderId ? { ...o, hasRated: true } : o
+        )
       )
-    )
+    } catch (err) {
+      toast({
+        title: "❌ Rating Failed",
+        description: "Something went wrong. Try again.",
+      })
+    }
   }
 
-  const handleSubmitTip = () => {
-    toast({
-      title: "💸 Tip Sent!",
-      description: `You tipped ₹${selectedTip}`,
-    })
+  const handleSubmitTip = async () => {
+    if (!token || !activeOrderId || !selectedTip) return
 
-    setOrders((prev) =>
-      prev.map((o) =>
-        o._id === activeOrderId ? { ...o, hasTipped: true } : o
+    try {
+      const res = await fetch(`/api/orders/${activeOrderId}/tip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ amount: Number(selectedTip) }),
+      })
+
+      if (!res.ok) throw new Error("Failed to send tip")
+
+      toast({
+        title: "💸 Tip Sent!",
+        description: `You tipped ₹${selectedTip}`,
+      })
+
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === activeOrderId ? { ...o, hasTipped: true } : o
+        )
       )
-    )
-    setSelectedTip("")
+
+      setSelectedTip("")
+    } catch (err) {
+      toast({
+        title: "❌ Tip Failed",
+        description: "Could not process tip. Try again.",
+      })
+    }
   }
 
   return (

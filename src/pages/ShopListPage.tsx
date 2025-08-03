@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { fetchShops, Shop } from "../lib/api"
 import ShopCard from "../components/ShopCard"
 import {
   Sheet,
@@ -9,13 +10,6 @@ import {
 } from "../components/ui/sheet"
 import { Button } from "../components/ui/button"
 import { SlidersHorizontal } from "lucide-react"
-
-type Shop = {
-  _id: string
-  name: string
-  description: string
-  imageUrl: string
-}
 
 const FilterSidebar = () => (
   <div className="space-y-6 p-2 md:p-0">
@@ -50,11 +44,9 @@ const ShopListPage = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchShops = async () => {
+    const loadShops = async () => {
       try {
-        const res = await fetch("/api/shops")
-        if (!res.ok) throw new Error("Failed to fetch")
-        const data: Shop[] = await res.json()
+        const data = await fetchShops()
         setShops(data)
       } catch (err) {
         setError("Failed to load shops.")
@@ -63,7 +55,7 @@ const ShopListPage = () => {
       }
     }
 
-    fetchShops()
+    loadShops()
   }, [])
 
   return (
